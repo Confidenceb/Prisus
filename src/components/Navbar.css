@@ -216,7 +216,7 @@
   .login-btn {
     margin-top: 36px;
     width: 100%;
-    text-align: center;
+    text-align: center !important;
     font-size: 1.05rem;
   }
 }
