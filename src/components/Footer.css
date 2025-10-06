@@ -1,0 +1,98 @@
+.footer {
+  background-color: #232b3a;
+  color: #fff;
+  padding: 3rem 1.5rem 1rem;
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+/* 🧠 Brand */
+.footer-brand h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.footer-brand span {
+  color: #4f9cff;
+}
+
+.footer-brand p {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #dcdcdc;
+  max-width: 250px;
+}
+
+/* 📌 Links */
+.footer-links h3,
+.footer-contact h3 {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 0.4rem;
+}
+
+.footer-links ul li a {
+  color: #dcdcdc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+  color: #4f9cff;
+}
+
+/* ✉ Contact */
+.footer-contact p {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+.footer-contact a {
+  color: #4f9cff;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.footer-contact a:hover {
+  opacity: 0.8;
+}
+
+/* 📝 Bottom line */
+.footer-bottom {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #bdbdbd;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .footer-brand p {
+    margin: 0 auto;
+  }
+}

@@ -1,0 +1,31 @@
+:root {
+  --background: #232b3a;
+  --surface: #2e3647;
+
+  --primary: #4b7bf5;
+  --primary-hover: #3a6be0;
+
+  --text-light: #ffffff;
+  --text-muted: #cbd5e1;
+
+  --border: #3b455a;
+
+  --success: #22c55e;
+  --error: #ef4444;
+  --accent: #facc15;
+}
+body,
+html,
+#root {
+  background: var(--background);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-dark);
+  font-family: "Inter", "Segoe UI", sans-serif;
+}

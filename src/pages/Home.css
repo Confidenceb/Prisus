@@ -1,0 +1,130 @@
+.hero-section {
+  background: var(--background);
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 30px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 0.2em;
+  color: var(--text-light);
+  letter-spacing: 0.5px;
+  line-height: 1.14;
+}
+
+.hero-accent {
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.hero-content p {
+  font-size: 1.18rem;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  margin-top: 12px;
+}
+
+.get-started-btn {
+  background: var(--primary);
+  color: var(--text-light);
+  padding: 14px 42px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.16s, transform 0.14s;
+}
+.get-started-btn:hover {
+  background: var(--primary-hover);
+  transform: scale(1.06);
+}
+
+Animations @keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeInDelayed {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes grow {
+  from {
+    transform: scale(0.87);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.85s ease-out 0.05s forwards;
+}
+.animate-fade-in-delayed {
+  opacity: 0;
+  animation: fadeInDelayed 1.1s ease-out 0.23s forwards;
+}
+.animate-slide-up {
+  animation: slideUp 0.9s cubic-bezier(0.33, 0.9, 0.3, 1.12) 0.19s forwards;
+  opacity: 0;
+}
+.animate-grow {
+  animation: grow 0.92s cubic-bezier(0.21, 0.98, 0.26, 1.05) 0.45s forwards;
+  opacity: 0;
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.83s cubic-bezier(0.25, 0.7, 0.38, 1.2) 0.17s forwards;
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.83s cubic-bezier(0.25, 0.7, 0.38, 1.2) 0.17s
+    forwards;
+}
