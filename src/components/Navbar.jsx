@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -7,23 +8,28 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      {menuOpen && (
+        <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
+      )}
       <div className="nav-container">
         <Link to="/" className="nav-logo">
           Prisus<span>.ai</span>
         </Link>
 
         {/* Hamburger Icon */}
-        <div
+        <button
+          type="button"
           className={`menu-toggle ${menuOpen ? "active" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
+          aria-controls="primary-navigation"
         >
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+          {menuOpen ? <X size={24} strokeWidth={1.9} /> : <Menu size={24} strokeWidth={1.9} />}
+        </button>
 
         {/* Nav Links */}
-        <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
+        <ul id="primary-navigation" className={`nav-links ${menuOpen ? "open" : ""}`}>
           <li>
             <Link to="/" onClick={() => setMenuOpen(false)}>
               Home
