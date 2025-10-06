@@ -52,7 +52,9 @@
   transform: scale(1.06);
 }
 
-Animations @keyframes fadeIn {
+/* Animations  */
+
+@keyframes fadeIn {
   to {
     opacity: 1;
   }
