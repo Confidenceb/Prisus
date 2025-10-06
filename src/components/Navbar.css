@@ -64,10 +64,10 @@
 }
 
 /* ✨ Login Button */
-.login-btn {
+/* .login-btn {
   background: linear-gradient(135deg, #4f9cff 0%, #7dd3fc 100%);
-  color: #071527 !important;
-  padding: 0.52rem 1.1rem;
+  color: var (--text-dark);
+  padding: 0.5rem 1rem;
   border-radius: 10px;
   font-weight: 600;
   box-shadow: 0 10px 20px rgba(79, 156, 255, 0.35);
@@ -76,8 +76,21 @@
 
 .login-btn:hover {
   transform: translateY(-0.5px);
-  box-shadow: 0 18px 40px rgba(79, 156, 255, 0.42);
+  box-shadow: 0 10px 40px rgba(79, 156, 255, 0.42);
   filter: saturate(110%);
+} */
+
+.login-btn {
+  background-color: #4f9cff;
+  color: #fff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #3576d1;
 }
 
 /* 🍔 Hamburger Menu */
