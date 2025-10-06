@@ -1,4 +1,5 @@
 import React from "react";
+import { BrainCircuit, FileText, TrendingUp, Zap } from "lucide-react";
 import "./Feature.css";
 
 const Feature = () => {
@@ -9,7 +10,9 @@ const Feature = () => {
         <h2>Everything you need to excel in your exams</h2>
         <div className="features-grid">
           <div className="feature-card animate-slide-in-left">
-            <span className="feature-icon">📄</span>
+            <span className="feature-icon" aria-hidden="true">
+              <FileText size={26} strokeWidth={1.6} />
+            </span>
             <div>
               <h3>Document Upload</h3>
               <p>
@@ -22,7 +25,9 @@ const Feature = () => {
             className="feature-card animate-slide-in-right"
             style={{ animationDelay: "0.15s" }}
           >
-            <span className="feature-icon">🧑‍💻</span>
+            <span className="feature-icon" aria-hidden="true">
+              <BrainCircuit size={26} strokeWidth={1.6} />
+            </span>
             <div>
               <h3>AI-Generated Tests</h3>
               <p>
@@ -34,7 +39,9 @@ const Feature = () => {
             className="feature-card animate-slide-in-left"
             style={{ animationDelay: "0.3s" }}
           >
-            <span className="feature-icon">⚡</span>
+            <span className="feature-icon" aria-hidden="true">
+              <Zap size={26} strokeWidth={1.6} />
+            </span>
             <div>
               <h3>Instant Feedback</h3>
               <p>
@@ -47,7 +54,9 @@ const Feature = () => {
             className="feature-card animate-slide-in-right"
             style={{ animationDelay: "0.45s" }}
           >
-            <span className="feature-icon">📈</span>
+            <span className="feature-icon" aria-hidden="true">
+              <TrendingUp size={26} strokeWidth={1.6} />
+            </span>
             <div>
               <h3>Progress Tracking</h3>
               <p>

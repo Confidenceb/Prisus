@@ -2,6 +2,10 @@ import React from "react";
 import "./Home.css";
 
 import Feature from "../components/Feature";
+import About from "../components/About";
+import Steps from "../components/Steps";
+import CTA from "../components/CTA";
+import Testimonials from "../components/Testimonials";
 
 function Home() {
   return (
@@ -20,6 +24,10 @@ function Home() {
         </div>
       </main>
       <Feature />
+      <About />
+      <Steps />
+      <Testimonials />
+      <CTA />
     </>
   );
 }
