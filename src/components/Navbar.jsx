@@ -21,23 +21,32 @@ const Navbar = () => {
           type="button"
           className={`menu-toggle ${menuOpen ? "active" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-label={
+            menuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
           aria-expanded={menuOpen}
           aria-controls="primary-navigation"
         >
-          {menuOpen ? <X size={24} strokeWidth={1.9} /> : <Menu size={24} strokeWidth={1.9} />}
+          {menuOpen ? (
+            <X size={24} strokeWidth={1.9} />
+          ) : (
+            <Menu size={24} strokeWidth={1.9} />
+          )}
         </button>
 
         {/* Nav Links */}
-        <ul id="primary-navigation" className={`nav-links ${menuOpen ? "open" : ""}`}>
+        <ul
+          id="primary-navigation"
+          className={`nav-links ${menuOpen ? "open" : ""}`}
+        >
           <li>
             <Link to="/" onClick={() => setMenuOpen(false)}>
               Home
             </Link>
           </li>
           <li>
-            <Link to="/features" onClick={() => setMenuOpen(false)}>
-              Features
+            <Link to="/generatepage" onClick={() => setMenuOpen(false)}>
+              Generate Page
             </Link>
           </li>
           <li>

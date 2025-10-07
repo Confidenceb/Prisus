@@ -1,0 +1,71 @@
+.generate-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.generate-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background: var(--background);
+  padding: 20px;
+}
+
+.generate-center {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.file-preview {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: var(--text-light);
+}
+.file-preview .ghost-btn {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+}
+
+.generate-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.file-upload-container {
+  text-align: center;
+}
+
+.file-drop-zone {
+  display: inline-block;
+  padding: 2rem;
+  border: 2px dashed #64748b;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #cbd5e1;
+  background-color: #232b3a;
+  transition: all 0.3s;
+}
+
+.file-drop-zone:hover {
+  background-color: #2f3a4f;
+}
