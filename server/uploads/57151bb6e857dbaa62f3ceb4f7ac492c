@@ -1,0 +1,16 @@
+Git - A free and open source Version control system
+Version control - the managements to changes in Computer
+GitHub - A gui for Git
+
+Commands
+1. Clone - Used to bring files from a git repo to local machine
+2. Add - Track file changes
+3. Commit - Save files in git  ---- -p param is used to commit part of changes
+4. push - update git commits to a repo
+5. pull - Download changes from a remote repo to your local machine
+6. git-status - to show files which are being modified and are yet to be committed
+7. git-checkout - to navigate through branches and to create branches as well using -b param
+8. git-diff - shows difference between two branches
+9. git-reset - to undo commit and staged file
+10. HEAD in Git points back to last commit
+11. git-merge  - to merge branches  --  -abort param - to abort last merge

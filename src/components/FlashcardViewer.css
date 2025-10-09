@@ -1,0 +1,69 @@
+.flashcard-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  gap: 20px;
+  width: 100%;
+}
+
+.flashcard {
+  width: 100%;
+  max-width: 550px;
+  min-height: 260px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--text-light);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  font-size: 1.2rem;
+  line-height: 1.4;
+  animation: fadeIn 0.4s ease;
+}
+
+.flashcard-inner {
+  width: 100%;
+}
+
+.flashcard-front,
+.flashcard-back {
+  width: 100%;
+}
+
+.flashcard-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.flashcard-progress {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .flashcard {
+    max-width: 90%;
+    min-height: 220px;
+    font-size: 1rem;
+    padding: 16px;
+  }
+}

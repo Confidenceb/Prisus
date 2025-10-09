@@ -1,0 +1,183 @@
+.pricing-page {
+  padding: 3rem 1rem;
+  color: #fff;
+  background-color: #232b3a;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pricing-header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.pricing-header p {
+  color: #ccc;
+}
+
+.billing-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  padding: 0.4rem 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.billing-toggle span {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.billing-toggle .active {
+  opacity: 1;
+  font-weight: 600;
+}
+
+.toggle-switch {
+  width: 45px;
+  height: 24px;
+  background: #4f6ef7;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.3s ease;
+}
+
+.toggle-thumb.monthly {
+  left: 4px;
+}
+
+.toggle-thumb.yearly {
+  left: 23px;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.pricing-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.8rem;
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-card .badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4f6ef7;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  border-radius: 20px;
+}
+
+.pricing-card h2 {
+  margin-bottom: 0.5rem;
+}
+
+.pricing-card .price {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pricing-card .price span {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.pricing-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  color: #ccc;
+}
+
+.pricing-card ul li {
+  margin: 0.4rem 0;
+}
+
+.pricing-card .btn-primary {
+  background-color: #4f6ef7;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.pricing-card .btn-primary:hover {
+  background-color: #3c57c7;
+}
+
+.comparison-table {
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.comparison-table h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.comparison-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 0.8rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison-table th {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.comparison-table td:first-child {
+  text-align: left;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .pricing-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .pricing-card {
+    padding: 1.2rem;
+  }
+}
