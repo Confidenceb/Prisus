@@ -92,6 +92,10 @@ app.post("/generate", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("✅ Prisus AI backend is running!");
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
