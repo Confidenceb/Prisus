@@ -6,29 +6,38 @@ import axios from "axios";
 dotenv.config();
 const app = express();
 
-// ✅ Proper CORS setup
+// ✅ Proper CORS setup (dynamic whitelist)
+const allowedOrigins = [
+  "http://localhost:5173", // Local dev
+  "https://prisus.vercel.app", // Deployed frontend
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // for local dev
-      "https://prisus.vercel.app", // your deployed frontend (change to your real Vercel URL)
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" })); // allow larger uploads if needed
 
 const PORT = process.env.PORT || 5000;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL = process.env.MODEL || "google/gemma-2-9b-it:free";
 
-// ✅ Test endpoint
+// ✅ Root health-check route (keep ONLY ONE)
 app.get("/", (req, res) => {
-  res.json({ message: "Prisus AI backend is live 🚀" });
+  res.json({ message: "✅ Prisus AI backend is running!" });
 });
 
+// ✅ Generate endpoint
 app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -37,6 +46,7 @@ app.post("/generate", async (req, res) => {
       return res.status(400).json({ error: "Missing prompt" });
     }
 
+    // 🔹 Call OpenRouter API
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -46,7 +56,7 @@ app.post("/generate", async (req, res) => {
             role: "system",
             content: `
               You are an AI that creates study materials from any given text.
-              Always respond in **strict JSON** with the following structure:
+              Always respond in strict JSON with this structure:
               
               {
                 "flashcards": [
@@ -57,13 +67,10 @@ app.post("/generate", async (req, res) => {
                 ]
               }
 
-              Never include markdown formatting or code blocks (no \`\`\`json).
+              Never include markdown or code fences.
             `,
           },
-          {
-            role: "user",
-            content: prompt,
-          },
+          { role: "user", content: prompt },
         ],
       },
       {
@@ -92,10 +99,7 @@ app.post("/generate", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("✅ Prisus AI backend is running!");
-});
-
+// ✅ Listen on all network interfaces for Railway
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
