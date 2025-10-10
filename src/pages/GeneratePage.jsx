@@ -3,59 +3,17 @@ import UploadFile from "../components/UploadFile";
 import ModeSelector from "../components/ModeSelector";
 import FlashcardViewer from "../components/FlashcardViewer";
 import QuizSection from "../components/QuizSection";
-<<<<<<< HEAD
-import { generateContent } from "../services/api";
-=======
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
 import "./GeneratePage.css";
 
 const GeneratePage = () => {
   const [file, setFile] = useState(null);
-<<<<<<< HEAD
-  const [mode, setMode] = useState(null);
-  const [flashcards, setFlashcards] = useState([]);
-  const [quiz, setQuiz] = useState([]);
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [loading, setLoading] = useState(false);
-=======
   const [mode, setMode] = useState(null); // "flashcards" | "quiz"
   const [flashcards, setFlashcards] = useState([]);
   const [quiz, setQuiz] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // ✅ Sample data for testing
-  const sampleFlashcards = [
-    {
-      question: "What is React?",
-      answer: "A JavaScript library for building UIs.",
-    },
-    {
-      question: "What is JSX?",
-      answer: "A syntax extension for JavaScript.",
-    },
-  ];
-
-  const sampleQuiz = [
-    {
-      question: "React is primarily used for?",
-      options: ["Styling", "UI", "Databases"],
-      correct: "UI",
-    },
-    {
-      question: "JSX allows you to write?",
-      options: ["Python", "HTML in JS", "SQL"],
-      correct: "HTML in JS",
-    },
-  ];
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
-
-  // ✅ Handle file upload
-  const handleFileUpload = (uploadedFile) => {
-    setFile(uploadedFile);
-    resetState();
-  };
-
-  // ✅ Reset state except file
+  // Reset state except file
   const resetState = () => {
     setMode(null);
     setFlashcards([]);
@@ -63,83 +21,117 @@ const GeneratePage = () => {
     setShowQuiz(false);
   };
 
-  // ✅ Handle mode selection
-<<<<<<< HEAD
-  const handleModeSelection = async (selectedMode) => {
-    setMode(selectedMode);
+  // Handle file upload
+  const handleFileUpload = (uploadedFile) => {
+    console.log("File uploaded:", uploadedFile);
+    setFile(uploadedFile);
+    resetState();
+  };
 
+  // 🔹 Helper function to clean & parse AI JSON safely
+  // 🔹 Helper function to clean & parse AI JSON safely
+  const parseAIResponse = (rawText) => {
     try {
-      const result = await generateContent(file, selectedMode);
+      // Remove Markdown code block formatting, pipes, and extra symbols
+      let cleaned = rawText
+        .replace(/```json|```/gi, "")
+        .replace(/^[^[{]*(?=[{\[])/, "") // remove junk before first { or [
+        .replace(/(?<=[}\]])[^}\]]*$/, "") // remove junk after last } or ]
+        .replace(/\|\|/g, "") // remove accidental ||
+        .trim();
 
-      // Backend returns { result: "AI text..." }
-      const aiText = result.result || "No response from AI.";
-
-      if (selectedMode === "flashcards") {
-        // Split into pseudo flashcards for display
-        const flashcardsList = aiText
-          .split("---")
-          .map((item) => {
-            const parts = item.split("**Back:**");
-            if (parts.length === 2) {
-              return {
-                question: parts[0].replace("**Front:**", "").trim(),
-                answer: parts[1].trim(),
-              };
-            }
-            return null;
-          })
-          .filter(Boolean);
-
-        setFlashcards(flashcardsList);
-      } else if (selectedMode === "quiz") {
-        // Treat response as one quiz block
-        setQuiz([
-          {
-            question: "Generated Quiz",
-            options: ["See details below"],
-            correct: aiText,
-          },
-        ]);
-        setShowQuiz(true);
-      }
+      // Try parsing directly
+      return JSON.parse(cleaned);
     } catch (err) {
-      console.error("Error generating content:", err);
-      alert("Something went wrong generating content. Try again.");
-=======
-  const handleModeSelection = (selectedMode) => {
-    setMode(selectedMode);
+      console.warn("⚠️ Failed to parse AI JSON:", err.message, rawText);
 
-    // Simulate generation process (AI or backend)
-    if (selectedMode === "flashcards") {
-      setFlashcards(sampleFlashcards);
-    } else if (selectedMode === "quiz") {
-      setQuiz(sampleQuiz);
-      setShowQuiz(true);
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
+      // Try last-resort extraction for nested JSON
+      try {
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+      } catch (_) {}
+
+      // If everything fails
+      alert("Error: Could not parse AI response.");
+      return { flashcards: [], quiz: [] };
     }
   };
 
-  // ✅ Handle transition from flashcards → quiz
-  const handleFlashcardsDone = () => {
-<<<<<<< HEAD
-=======
-    setQuiz(sampleQuiz);
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
-    setShowQuiz(true);
+  // 🔹 Core generator function (for flashcards or quiz)
+  const generateFromFile = async (selectedMode) => {
+    if (!file) return alert("Please upload a file first.");
+
+    try {
+      const text = await file.text();
+      const prompt =
+        selectedMode === "flashcards"
+          ? `Generate clear and detailed flashcards from this content:\n\n${text}`
+          : `Generate 5 quiz questions with options and correct answers from this content:\n\n${text}`;
+
+      setLoading(true);
+      console.log(`🧠 Generating ${selectedMode}...`);
+
+      const response = await fetch("http://localhost:5000/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        const msg =
+          typeof data.error === "string"
+            ? data.error
+            : JSON.stringify(data.error);
+        alert("Error: " + msg);
+        return null;
+      }
+
+      console.log("Raw AI output:", data.result);
+      return parseAIResponse(data.result);
+    } catch (err) {
+      console.error("❌ Generation error:", err);
+      alert("Something went wrong while generating.");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 When user selects mode
+  const handleModeSelection = async (selectedMode) => {
+    console.log("Mode selected:", selectedMode);
+    setMode(selectedMode);
+
+    const aiOutput = await generateFromFile(selectedMode);
+    if (!aiOutput) return;
+
+    if (selectedMode === "flashcards") {
+      setFlashcards(aiOutput.flashcards || []);
+    } else {
+      setQuiz(aiOutput.quiz || []);
+      setShowQuiz(true);
+    }
+  };
+
+  // 🔹 When flashcards end → auto-generate quiz
+  const handleFlashcardsDone = async () => {
+    console.log("🎯 Flashcards completed, generating quiz next...");
+    const aiOutput = await generateFromFile("quiz");
+
+    if (aiOutput && aiOutput.quiz.length > 0) {
+      setQuiz(aiOutput.quiz);
+      setShowQuiz(true);
+    } else {
+      alert("Quiz generation failed or returned empty.");
+    }
   };
 
   return (
     <main className="generate-page">
       <div className="generate-center">
-<<<<<<< HEAD
         {!file && <UploadFile onFileUpload={handleFileUpload} />}
 
-=======
-        {/* 📂 Upload Section */}
-        {!file && <UploadFile onFileUpload={handleFileUpload} />}
-
-        {/* 📝 File Preview */}
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
         {file && (
           <>
             <div className="file-preview">
@@ -156,22 +148,12 @@ const GeneratePage = () => {
               </div>
             </div>
 
-<<<<<<< HEAD
-            {!mode && (
-              <ModeSelector
-                onSelectMode={handleModeSelection}
-                disabled={loading}
-              />
-            )}
-
-            {loading && <p className="loading">⚙️ Generating content...</p>}
-
-=======
-            {/* ⚡ Mode Selection */}
             {!mode && <ModeSelector onSelectMode={handleModeSelection} />}
 
-            {/* 🃏 Flashcard Viewer */}
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
+            {loading && (
+              <div className="loading">⏳ Generating... please wait</div>
+            )}
+
             {mode === "flashcards" && flashcards.length > 0 && !showQuiz && (
               <FlashcardViewer
                 cards={flashcards}
@@ -179,10 +161,6 @@ const GeneratePage = () => {
               />
             )}
 
-<<<<<<< HEAD
-=======
-            {/* 🧠 Quiz Section */}
->>>>>>> 57969f369d4dce7e4c1b0ebbdef31d60ab92a0f4
             {showQuiz && quiz.length > 0 && (
               <QuizSection quizData={quiz} onRestart={resetState} />
             )}

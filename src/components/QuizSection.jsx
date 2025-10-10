@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./QuizSection.css";
 
 export default function QuizSection({ quizData = [], onRestart }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+    setScore(0);
+  }, [quizData]);
 
   if (!quizData.length) {
     return <div className="quiz-section">No quiz data</div>;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./FlashcardViewer.css";
 
 const FlashcardViewer = ({ cards, onComplete }) => {
@@ -13,6 +13,12 @@ const FlashcardViewer = ({ cards, onComplete }) => {
       onComplete();
     }
   };
+
+  // ✅ Reset flashcard state when new cards are loaded or component remounts
+  useEffect(() => {
+    setIndex(0);
+    setShowAnswer(false);
+  }, [cards]);
 
   const card = cards[index];
 

@@ -10,7 +10,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = process.env.MODEL || "google/gemini-2.0-flash-exp";
+const MODEL = process.env.MODEL || "google/gemma-2-9b-it:free";
 
 app.post("/generate", async (req, res) => {
   try {
@@ -27,8 +27,21 @@ app.post("/generate", async (req, res) => {
         messages: [
           {
             role: "system",
-            content:
-              "You are an AI that creates flashcards and quizzes from study materials.",
+            content: `
+        You are an AI that creates study materials from any given text.
+        Always respond in **strict JSON** with the following structure:
+        
+        {
+          "flashcards": [
+            { "question": "string", "answer": "string" }
+          ],
+          "quiz": [
+            { "question": "string", "options": ["string", "string", "string"], "correct": "string" }
+          ]
+        }
+        
+        Never include markdown formatting or code blocks (no \`\`\`json).
+        `,
           },
           {
             role: "user",
