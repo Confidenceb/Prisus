@@ -1,16 +1,94 @@
-# React + Vite
+# 🧠 Prisus AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Turn your notes into flashcards and quizzes instantly.**
 
-Currently, two official plugins are available:
+Prisus AI is an intelligent learning assistant that helps students and educators generate flashcards and quizzes directly from uploaded study materials using AI. Built with **React** on the frontend and powered by an **AI backend hosted on Railway**, it simplifies revision and makes studying more interactive.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* 📄 Upload text or document files
+* ⚙️ Choose between **Flashcard** or **Quiz** generation modes
+* 🤖 AI-powered content generation from study materials
+* 💡 Automatically create quizzes after completing flashcards
+* 🧩 Clean, responsive, and user-friendly interface
+* 🌐 Backend hosted on **Railway** for reliable performance
 
-## Expanding the ESLint configuration
+ 
+## 🧰 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Frontend:**
+
+* React (Vite)
+* CSS
+
+**Backend:**
+
+* Node.js + Express
+* Hosted on Railway
+* AI model integration (via fetch API requests)
+
+ 
+
+## ⚙️ Setup
+
+### Clone the repo
+
+ bash
+git clone https://github.com/<your-username>/prisus-ai.git
+cd prisus-ai
+ 
+
+### Install dependencies
+
+ bash
+npm install
+ 
+
+### Run locally
+
+ bash
+npm run dev
+ 
+
+Your app will be live at: **[http://localhost:5173](http://localhost:5173)**
+
+ 
+## 🌍 Deployment
+
+* **Frontend:** Vercel
+* **Backend:** Railway
+  To update the AI logic, simply redeploy the backend on Railway — no frontend changes needed.
+
+ 
+## 🧑‍💻 Project Structure
+
+ 
+prisus-ai/
+│
+├── src/
+│   ├── components/       # Reusable components
+│   ├── Pages/            # Page-level components (e.g. GeneratePage)
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── assets/
+│
+├── public/
+├── package.json
+└── vite.config.js
+ 
+ 
+
+## 🏆 Elevator Pitch
+
+> **“Prisus AI — Turn your notes into smart study materials in seconds.”**
+
+## 📫 Contact
+
+Developed by **Noibi Jamiu Gbolahan | Sanusi Quareeb Folaranmi | Senu Oluwadamilare**
+📧 Email: [gboljamiu207@gmail.com](mailto:gboljamiu207@gmail.com)
+🌐 GitHub: [@Gboljamiu](https://github.com/Confidenceb)
+
+ 
+
+Would you like me to make this README version **Markdown-styled** (with emojis, badges, and clickable links for your Devpost submission)? It’ll look more attractive and professional.
