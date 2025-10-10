@@ -46,6 +46,10 @@ app.post("/generate", async (req, res) => {
       return res.status(400).json({ error: "Missing prompt" });
     }
 
+    // 🔹 Log model + key presence
+    console.log("🧠 Using model:", MODEL);
+    console.log("🔑 API key present:", !!OPENROUTER_API_KEY);
+
     // 🔹 Call OpenRouter API
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -84,6 +88,7 @@ app.post("/generate", async (req, res) => {
     const aiResponse = response.data?.choices?.[0]?.message?.content;
 
     if (!aiResponse) {
+      console.error("❌ Empty AI response:", response.data);
       return res.status(500).json({ error: "Empty response from AI model" });
     }
 
@@ -94,7 +99,7 @@ app.post("/generate", async (req, res) => {
       error.response?.data || error.message
     );
     res.status(500).json({
-      error: error.response?.data || "Error communicating with OpenRouter",
+      error: error.response?.data || error.message,
     });
   }
 });
