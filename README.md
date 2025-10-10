@@ -87,7 +87,7 @@ prisus-ai/
 
 Developed by **Noibi Jamiu Gbolahan | Sanusi Quareeb Folaranmi | Senu Oluwadamilare**
 📧 Email: [gboljamiu207@gmail.com](mailto:gboljamiu207@gmail.com)
-🌐 GitHub: [@Gboljamiu](https://github.com/Confidenceb)
+🌐 GitHub: [@Confidenceb](https://github.com/Confidenceb)
 
  
 
