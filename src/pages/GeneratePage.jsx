@@ -33,24 +33,20 @@ const GeneratePage = () => {
   // 🔹 Helper function to clean & parse AI JSON safely
   const parseAIResponse = (rawText) => {
     try {
-      // Remove Markdown code block formatting, pipes, and extra symbols
       let cleaned = rawText
         .replace(/```json|```/gi, "")
-        .replace(/^[^[{]*(?=[{\[])/, "") // remove junk before first { or [
-        .replace(/(?<=[}\]])[^}\]]*$/, "") // remove junk after last } or ]
-        .replace(/\|\|/g, "") // remove accidental ||
+        .replace(/^[^[{]*(?=[{\[])/, "")
+        .replace(/(?<=[}\]])[^}\]]*$/, "")
+        .replace(/\|\|/g, "")
         .trim();
 
       return JSON.parse(cleaned);
     } catch (err) {
       console.warn("⚠️ Failed to parse AI JSON:", err.message, rawText);
-
-      // Try last-resort extraction for nested JSON
       try {
         const match = rawText.match(/\{[\s\S]*\}/);
         if (match) return JSON.parse(match[0]);
       } catch (_) {}
-
       alert("Error: Could not parse AI response.");
       return { flashcards: [], quiz: [] };
     }
@@ -82,9 +78,7 @@ const GeneratePage = () => {
       const data = await response.json();
       if (data.error) {
         const msg =
-          typeof data.error === "string"
-            ? data.error
-            : JSON.stringify(data.error);
+          typeof data.error === "string" ? data.error : JSON.stringify(data.error);
         alert("Error: " + msg);
         return null;
       }
@@ -112,4 +106,67 @@ const GeneratePage = () => {
       setFlashcards(aiOutput.flashcards || []);
     } else {
       setQuiz(aiOutput.quiz || []);
-      setShowQuiz(t
+      setShowQuiz(true);
+    }
+  };
+
+  // 🔹 When flashcards end → auto-generate quiz
+  const handleFlashcardsDone = async () => {
+    console.log("🎯 Flashcards completed, generating quiz next...");
+    const aiOutput = await generateFromFile("quiz");
+
+    if (aiOutput && aiOutput.quiz.length > 0) {
+      setQuiz(aiOutput.quiz);
+      setShowQuiz(true);
+    } else {
+      alert("Quiz generation failed or returned empty.");
+    }
+  };
+
+  return (
+    <main className="generate-page">
+      <div className="generate-center">
+        {!file && <UploadFile onFileUpload={handleFileUpload} />}
+
+        {file && (
+          <>
+            <div className="file-preview">
+              <div>
+                <strong>Selected:</strong> {file.name}{" "}
+                <span className="muted">
+                  ({(file.size / 1024).toFixed(0)} KB)
+                </span>
+              </div>
+              <div className="file-actions">
+                <button className="ghost-btn" onClick={() => setFile(null)}>
+                  Remove
+                </button>
+              </div>
+            </div>
+
+            {!mode && (
+              <ModeSelector
+                onSelectMode={handleModeSelection}
+                disabled={loading}
+              />
+            )}
+
+            {loading && (
+              <div className="loading">⏳ Generating... please wait</div>
+            )}
+
+            {mode === "flashcards" && flashcards.length > 0 && !showQuiz && (
+              <FlashcardViewer cards={flashcards} onComplete={handleFlashcardsDone} />
+            )}
+
+            {showQuiz && quiz.length > 0 && (
+              <QuizSection quizData={quiz} onRestart={resetState} />
+            )}
+          </>
+        )}
+      </div>
+    </main>
+  );
+};
+
+export default GeneratePage;
