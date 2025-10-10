@@ -5,12 +5,29 @@ import axios from "axios";
 
 dotenv.config();
 const app = express();
-app.use(cors());
+
+// ✅ Proper CORS setup
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // for local dev
+      "https://prisus.vercel.app", // your deployed frontend (change to your real Vercel URL)
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL = process.env.MODEL || "google/gemma-2-9b-it:free";
+
+// ✅ Test endpoint
+app.get("/", (req, res) => {
+  res.json({ message: "Prisus AI backend is live 🚀" });
+});
 
 app.post("/generate", async (req, res) => {
   try {
@@ -28,20 +45,20 @@ app.post("/generate", async (req, res) => {
           {
             role: "system",
             content: `
-        You are an AI that creates study materials from any given text.
-        Always respond in **strict JSON** with the following structure:
-        
-        {
-          "flashcards": [
-            { "question": "string", "answer": "string" }
-          ],
-          "quiz": [
-            { "question": "string", "options": ["string", "string", "string"], "correct": "string" }
-          ]
-        }
-        
-        Never include markdown formatting or code blocks (no \`\`\`json).
-        `,
+              You are an AI that creates study materials from any given text.
+              Always respond in **strict JSON** with the following structure:
+              
+              {
+                "flashcards": [
+                  { "question": "string", "answer": "string" }
+                ],
+                "quiz": [
+                  { "question": "string", "options": ["string", "string", "string"], "correct": "string" }
+                ]
+              }
+
+              Never include markdown formatting or code blocks (no \`\`\`json).
+            `,
           },
           {
             role: "user",
@@ -65,7 +82,10 @@ app.post("/generate", async (req, res) => {
 
     res.json({ result: aiResponse });
   } catch (error) {
-    console.error("Error generating:", error.response?.data || error.message);
+    console.error(
+      "❌ Error generating:",
+      error.response?.data || error.message
+    );
     res.status(500).json({
       error: error.response?.data || "Error communicating with OpenRouter",
     });
