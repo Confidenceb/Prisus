@@ -3,7 +3,10 @@ import UploadFile from "../components/UploadFile";
 import ModeSelector from "../components/ModeSelector";
 import FlashcardViewer from "../components/FlashcardViewer";
 import QuizSection from "../components/QuizSection";
+ firebase-auth
 import { generateContent } from "../services/api"; // keep firebase-auth import
+
+ main
 import "./GeneratePage.css";
 
 const GeneratePage = () => {
@@ -14,6 +17,7 @@ const GeneratePage = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [loading, setLoading] = useState(false);
 
+ firebase-auth
   // Handle file upload
   const handleFileUpload = (uploadedFile) => {
     console.log("File uploaded:", uploadedFile);
@@ -21,6 +25,8 @@ const GeneratePage = () => {
     resetState();
   };
 
+
+ main
   // Reset state except file
   const resetState = () => {
     setMode(null);
@@ -29,6 +35,7 @@ const GeneratePage = () => {
     setShowQuiz(false);
   };
 
+ firebase-auth
   // Helper function to clean & parse AI JSON safely
   const parseAIResponse = (rawText) => {
     try {
@@ -55,7 +62,51 @@ const GeneratePage = () => {
   const generateFromFile = async (selectedMode) => {
     if (!file) return alert("Please upload a file first.");
 
+  // Handle file upload
+  const handleFileUpload = (uploadedFile) => {
+    console.log("File uploaded:", uploadedFile);
+    setFile(uploadedFile);
+    resetState();
+  };
+ main
+
+  // 🔹 Helper function to clean & parse AI JSON safely
+  // 🔹 Helper function to clean & parse AI JSON safely
+  const parseAIResponse = (rawText) => {
     try {
+ firebase-auth
+
+      // Remove Markdown code block formatting, pipes, and extra symbols
+      let cleaned = rawText
+        .replace(/```json|```/gi, "")
+        .replace(/^[^[{]*(?=[{\[])/, "") // remove junk before first { or [
+        .replace(/(?<=[}\]])[^}\]]*$/, "") // remove junk after last } or ]
+        .replace(/\|\|/g, "") // remove accidental ||
+        .trim();
+
+      // Try parsing directly
+      return JSON.parse(cleaned);
+    } catch (err) {
+      console.warn("⚠️ Failed to parse AI JSON:", err.message, rawText);
+
+      // Try last-resort extraction for nested JSON
+      try {
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+      } catch (_) {}
+
+      // If everything fails
+      alert("Error: Could not parse AI response.");
+      return { flashcards: [], quiz: [] };
+    }
+  };
+
+  // 🔹 Core generator function (for flashcards or quiz)
+  const generateFromFile = async (selectedMode) => {
+    if (!file) return alert("Please upload a file first.");
+
+    try {
+ main
       const text = await file.text();
       const prompt =
         selectedMode === "flashcards"
@@ -77,7 +128,13 @@ const GeneratePage = () => {
       const data = await response.json();
       if (data.error) {
         const msg =
+ firebase-auth
           typeof data.error === "string" ? data.error : JSON.stringify(data.error);
+
+          typeof data.error === "string"
+            ? data.error
+            : JSON.stringify(data.error);
+ main
         alert("Error: " + msg);
         return null;
       }
@@ -93,7 +150,11 @@ const GeneratePage = () => {
     }
   };
 
+ firebase-auth
   // When user selects mode
+
+  // 🔹 When user selects mode
+  main
   const handleModeSelection = async (selectedMode) => {
     console.log("Mode selected:", selectedMode);
     setMode(selectedMode);
@@ -109,7 +170,11 @@ const GeneratePage = () => {
     }
   };
 
+ firebase-auth
   // When flashcards end → auto-generate quiz
+
+  // 🔹 When flashcards end → auto-generate quiz
+ main
   const handleFlashcardsDone = async () => {
     console.log("🎯 Flashcards completed, generating quiz next...");
     const aiOutput = await generateFromFile("quiz");
@@ -143,6 +208,7 @@ const GeneratePage = () => {
               </div>
             </div>
 
+ firebase-auth
             {!mode && (
               <ModeSelector
                 onSelectMode={handleModeSelection}
@@ -154,6 +220,13 @@ const GeneratePage = () => {
               <div className="loading">⏳ Generating... please wait</div>
             )}
 
+
+            {!mode && <ModeSelector onSelectMode={handleModeSelection} />}
+
+            {loading && (
+              <div className="loading">⏳ Generating... please wait</div>
+            )}
+              main
             {mode === "flashcards" && flashcards.length > 0 && !showQuiz && (
               <FlashcardViewer cards={flashcards} onComplete={handleFlashcardsDone} />
             )}

@@ -7,13 +7,16 @@ export const generateContent = async (file, mode) => {
     const prompt = `Generate ${mode} from the following study material:\n\n${text}`;
 
     // Send to backend
-    const response = await fetch("http://localhost:5000/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt }),
-    });
+    const response = await fetch(
+      "https://prisusai-production.up.railway.app/generate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      }
+    );
 
     const data = await response.json();
 
