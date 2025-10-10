@@ -1,4 +1,3 @@
-// src/pages/GeneratePage.jsx
 import React, { useState } from "react";
 import UploadFile from "../components/UploadFile";
 import ModeSelector from "../components/ModeSelector";
@@ -30,7 +29,7 @@ const GeneratePage = () => {
     setShowQuiz(false);
   };
 
-  // 🔹 Helper function to clean & parse AI JSON safely
+  // Helper function to clean & parse AI JSON safely
   const parseAIResponse = (rawText) => {
     try {
       let cleaned = rawText
@@ -52,7 +51,7 @@ const GeneratePage = () => {
     }
   };
 
-  // 🔹 Core generator function (for flashcards or quiz)
+  // Core generator function (for flashcards or quiz)
   const generateFromFile = async (selectedMode) => {
     if (!file) return alert("Please upload a file first.");
 
@@ -94,7 +93,7 @@ const GeneratePage = () => {
     }
   };
 
-  // 🔹 When user selects mode
+  // When user selects mode
   const handleModeSelection = async (selectedMode) => {
     console.log("Mode selected:", selectedMode);
     setMode(selectedMode);
@@ -110,7 +109,7 @@ const GeneratePage = () => {
     }
   };
 
-  // 🔹 When flashcards end → auto-generate quiz
+  // When flashcards end → auto-generate quiz
   const handleFlashcardsDone = async () => {
     console.log("🎯 Flashcards completed, generating quiz next...");
     const aiOutput = await generateFromFile("quiz");
