@@ -10,8 +10,8 @@ import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import GeneratePage from "./pages/GeneratePage";
 import PricingPage from "./pages/PricingPage";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Login from "./pages/login";
+import Signup from "./pages/signup";
 import Profile from "./pages/Profile";
 
 function App() {
