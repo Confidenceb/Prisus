@@ -11,7 +11,7 @@ import Footer from "./components/Footer";
 import GeneratePage from "./pages/GeneratePage";
 import PricingPage from "./pages/PricingPage";
 import Login from "./pages/login";
-import Signup from "./pages/signup";
+import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 
 function App() {
