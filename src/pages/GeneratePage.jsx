@@ -1,17 +1,26 @@
+// src/pages/GeneratePage.jsx
 import React, { useState } from "react";
 import UploadFile from "../components/UploadFile";
 import ModeSelector from "../components/ModeSelector";
 import FlashcardViewer from "../components/FlashcardViewer";
 import QuizSection from "../components/QuizSection";
+import { generateContent } from "../services/api";
 import "./GeneratePage.css";
 
 const GeneratePage = () => {
   const [file, setFile] = useState(null);
-  const [mode, setMode] = useState(null); // "flashcards" | "quiz"
+  const [mode, setMode] = useState(null);
   const [flashcards, setFlashcards] = useState([]);
   const [quiz, setQuiz] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Handle file upload
+  const handleFileUpload = (uploadedFile) => {
+    console.log("File uploaded:", uploadedFile);
+    setFile(uploadedFile);
+    resetState();
+  };
 
   // Reset state except file
   const resetState = () => {
@@ -21,43 +30,29 @@ const GeneratePage = () => {
     setShowQuiz(false);
   };
 
-  // Handle file upload
-  const handleFileUpload = (uploadedFile) => {
-    console.log("File uploaded:", uploadedFile);
-    setFile(uploadedFile);
-    resetState();
-  };
-
-  // 🔹 Helper function to clean & parse AI JSON safely
-  // 🔹 Helper function to clean & parse AI JSON safely
+  // Helper function to clean & parse AI JSON safely
   const parseAIResponse = (rawText) => {
     try {
-      // Remove Markdown code block formatting, pipes, and extra symbols
       let cleaned = rawText
         .replace(/```json|```/gi, "")
-        .replace(/^[^[{]*(?=[{\[])/, "") // remove junk before first { or [
-        .replace(/(?<=[}\]])[^}\]]*$/, "") // remove junk after last } or ]
-        .replace(/\|\|/g, "") // remove accidental ||
+        .replace(/^[^[{]*(?=[{\[])/, "")
+        .replace(/(?<=[}\]])[^}\]]*$/, "")
+        .replace(/\|\|/g, "")
         .trim();
 
-      // Try parsing directly
       return JSON.parse(cleaned);
     } catch (err) {
       console.warn("⚠️ Failed to parse AI JSON:", err.message, rawText);
-
-      // Try last-resort extraction for nested JSON
       try {
         const match = rawText.match(/\{[\s\S]*\}/);
         if (match) return JSON.parse(match[0]);
       } catch (_) {}
-
-      // If everything fails
       alert("Error: Could not parse AI response.");
       return { flashcards: [], quiz: [] };
     }
   };
 
-  // 🔹 Core generator function (for flashcards or quiz)
+  // Core generator function (for flashcards or quiz)
   const generateFromFile = async (selectedMode) => {
     if (!file) return alert("Please upload a file first.");
 
@@ -101,7 +96,7 @@ const GeneratePage = () => {
     }
   };
 
-  // 🔹 When user selects mode
+  // When user selects mode
   const handleModeSelection = async (selectedMode) => {
     console.log("Mode selected:", selectedMode);
     setMode(selectedMode);
@@ -117,7 +112,7 @@ const GeneratePage = () => {
     }
   };
 
-  // 🔹 When flashcards end → auto-generate quiz
+  // When flashcards end → auto-generate quiz
   const handleFlashcardsDone = async () => {
     console.log("🎯 Flashcards completed, generating quiz next...");
     const aiOutput = await generateFromFile("quiz");
@@ -151,7 +146,12 @@ const GeneratePage = () => {
               </div>
             </div>
 
-            {!mode && <ModeSelector onSelectMode={handleModeSelection} />}
+            {!mode && (
+              <ModeSelector
+                onSelectMode={handleModeSelection}
+                disabled={loading}
+              />
+            )}
 
             {loading && (
               <div className="loading">⏳ Generating... please wait</div>
