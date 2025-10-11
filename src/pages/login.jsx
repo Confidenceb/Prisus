@@ -1,8 +1,9 @@
-// src/pages/Login.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../auth";
-import Notification from "../components/Notification"; 
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../firebase";
+import Notification from "../components/Notification";
 import "./login.css";
 
 export default function Login({ setUser }) {
@@ -15,31 +16,61 @@ export default function Login({ setUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Login form submitted");
-
       const user = await loginUser(email, password);
-      console.log("User after login:", user);
-
-      // 🧩 Force displayName immediately for avatar
       const updatedUser = {
         ...user,
         displayName: user.displayName || email.split("@")[0],
       };
-
-      setUser(updatedUser); // instantly updates navbar avatar
+      setUser(updatedUser);
       setNotif({ message: "Login successful!", type: "success" });
       setLoggedIn(true);
     } catch (err) {
       console.error("Login error:", err);
-      setNotif({ message: err.message, type: "error" });
+
+      // 🧠 No matter what Firebase throws, we keep it user-friendly
+      const errorCodes = [
+        "auth/invalid-email",
+        "auth/invalid-credential",
+        "auth/wrong-password",
+        "auth/user-not-found",
+      ];
+
+      if (errorCodes.includes(err.code)) {
+        setNotif({ message: "Invalid Email or Password", type: "error" });
+      } else {
+        setNotif({
+          message: "An unexpected error occurred. Please try again.",
+          type: "error",
+        });
+      }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setNotif({
+        message: "Please enter your email before resetting password.",
+        type: "error",
+      });
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setNotif({
+        message: `Password reset link sent to ${email}. Check your inbox.`,
+        type: "success",
+      });
+    } catch (err) {
+      console.error("Password reset error:", err);
+      setNotif({
+        message: "Couldn't send reset link. Please check your email.",
+        type: "error",
+      });
     }
   };
 
   useEffect(() => {
-    if (loggedIn) {
-      console.log("Redirecting to /");
-      navigate("/");
-    }
+    if (loggedIn) navigate("/");
   }, [loggedIn, navigate]);
 
   return (
@@ -72,12 +103,21 @@ export default function Login({ setUser }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
           <button type="submit" className="login-btn">
             Sign In
           </button>
         </form>
 
         <div className="login-footer">
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            className="forgot-btn"
+          >
+            Forgot Password?
+          </button>
+          <span style={{ margin: "0 6px", color: "#aaa" }}>•</span>
           Don’t have an account? <Link to="/signup">Create one</Link>
         </div>
       </div>

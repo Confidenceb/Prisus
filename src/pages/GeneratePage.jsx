@@ -4,19 +4,29 @@ import UploadFile from "../components/UploadFile";
 import ModeSelector from "../components/ModeSelector";
 import FlashcardViewer from "../components/FlashcardViewer";
 import QuizSection from "../components/QuizSection";
-import { generateContent } from "../services/api";
+import Notification from "../components/Notification"; // 👈 import toast
 import "./GeneratePage.css";
 
-const GeneratePage = () => {
+const GeneratePage = ({ user }) => {
   const [file, setFile] = useState(null);
   const [mode, setMode] = useState(null);
   const [flashcards, setFlashcards] = useState([]);
   const [quiz, setQuiz] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [notif, setNotif] = useState({ message: "", type: "info" }); // 👈 notification state
 
   // Handle file upload
   const handleFileUpload = (uploadedFile) => {
+    // 🚫 Stop anonymous uploads
+    if (!user) {
+      setNotif({
+        message: "Please log in to upload files.",
+        type: "error",
+      });
+      return;
+    }
+
     console.log("File uploaded:", uploadedFile);
     setFile(uploadedFile);
     resetState();
@@ -47,14 +57,23 @@ const GeneratePage = () => {
         const match = rawText.match(/\{[\s\S]*\}/);
         if (match) return JSON.parse(match[0]);
       } catch (_) {}
-      alert("Error: Could not parse AI response.");
+      setNotif({
+        message: "Error: Could not parse AI response.",
+        type: "error",
+      });
       return { flashcards: [], quiz: [] };
     }
   };
 
   // Core generator function (for flashcards or quiz)
   const generateFromFile = async (selectedMode) => {
-    if (!file) return alert("Please upload a file first.");
+    if (!file) {
+      setNotif({
+        message: "Please upload a file first.",
+        type: "error",
+      });
+      return null;
+    }
 
     try {
       const text = await file.text();
@@ -81,7 +100,7 @@ const GeneratePage = () => {
           typeof data.error === "string"
             ? data.error
             : JSON.stringify(data.error);
-        alert("Error: " + msg);
+        setNotif({ message: "Error: " + msg, type: "error" });
         return null;
       }
 
@@ -89,7 +108,10 @@ const GeneratePage = () => {
       return parseAIResponse(data.result);
     } catch (err) {
       console.error("❌ Generation error:", err);
-      alert("Something went wrong while generating.");
+      setNotif({
+        message: "Something went wrong while generating.",
+        type: "error",
+      });
       return null;
     } finally {
       setLoading(false);
@@ -121,12 +143,22 @@ const GeneratePage = () => {
       setQuiz(aiOutput.quiz);
       setShowQuiz(true);
     } else {
-      alert("Quiz generation failed or returned empty.");
+      setNotif({
+        message: "Quiz generation failed or returned empty.",
+        type: "error",
+      });
     }
   };
 
   return (
     <main className="generate-page">
+      {/* ✅ Notification Toast */}
+      <Notification
+        message={notif.message}
+        type={notif.type}
+        onClose={() => setNotif({ message: "", type: "info" })}
+      />
+
       <div className="generate-center">
         {!file && <UploadFile onFileUpload={handleFileUpload} />}
 

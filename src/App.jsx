@@ -33,19 +33,17 @@ function App() {
     <Router>
       <Navbar user={user} setUser={setUser} />
       <Routes>
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/signup" element={<Signup />} />
+  <Route path="/login" element={<Login setUser={setUser} />} />
+  <Route path="/signup" element={<Signup />} />
 
-        <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/generatepage" element={user ? <GeneratePage /> : <Navigate to="/login" />} />
-        <Route path="/pricing" element={user ? <PricingPage /> : <Navigate to="/login" />} />
-<Route
-  path="/profile"
-  element={user ? <Profile /> : <Navigate to="/login" />}
-/>
+  <Route path="/" element={<Home />} />
+  <Route path="/generatepage" element={<GeneratePage user={user} />} />
+  <Route path="/pricing" element={<PricingPage />} />
+  <Route path="/profile" element={user ? <Profile user={user} setUser={setUser} /> : <Navigate to="/login" />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+  <Route path="*" element={<Navigate to="/" />} />
+</Routes>
+
       <Footer />
     </Router>
   );

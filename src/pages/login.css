@@ -81,3 +81,24 @@
 .login-footer a:hover {
   text-decoration: underline;
 }
+.forgot-password {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.forgot-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.forgot-btn:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
