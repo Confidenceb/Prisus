@@ -1,17 +1,36 @@
+// src/pages/GeneratePage.jsx
 import React, { useState } from "react";
 import UploadFile from "../components/UploadFile";
 import ModeSelector from "../components/ModeSelector";
 import FlashcardViewer from "../components/FlashcardViewer";
 import QuizSection from "../components/QuizSection";
+import Notification from "../components/Notification"; // 👈 import toast
 import "./GeneratePage.css";
 
-const GeneratePage = () => {
+const GeneratePage = ({ user }) => {
   const [file, setFile] = useState(null);
-  const [mode, setMode] = useState(null); // "flashcards" | "quiz"
+  const [mode, setMode] = useState(null);
   const [flashcards, setFlashcards] = useState([]);
   const [quiz, setQuiz] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [notif, setNotif] = useState({ message: "", type: "info" }); // 👈 notification state
+
+  // Handle file upload
+  const handleFileUpload = (uploadedFile) => {
+    // 🚫 Stop anonymous uploads
+    if (!user) {
+      setNotif({
+        message: "Please log in to upload files.",
+        type: "error",
+      });
+      return;
+    }
+
+    console.log("File uploaded:", uploadedFile);
+    setFile(uploadedFile);
+    resetState();
+  };
 
   // Reset state except file
   const resetState = () => {
@@ -21,45 +40,40 @@ const GeneratePage = () => {
     setShowQuiz(false);
   };
 
-  // Handle file upload
-  const handleFileUpload = (uploadedFile) => {
-    console.log("File uploaded:", uploadedFile);
-    setFile(uploadedFile);
-    resetState();
-  };
-
-  // 🔹 Helper function to clean & parse AI JSON safely
-  // 🔹 Helper function to clean & parse AI JSON safely
+  // Helper function to clean & parse AI JSON safely
   const parseAIResponse = (rawText) => {
     try {
-      // Remove Markdown code block formatting, pipes, and extra symbols
       let cleaned = rawText
         .replace(/```json|```/gi, "")
-        .replace(/^[^[{]*(?=[{\[])/, "") // remove junk before first { or [
-        .replace(/(?<=[}\]])[^}\]]*$/, "") // remove junk after last } or ]
-        .replace(/\|\|/g, "") // remove accidental ||
+        .replace(/^[^[{]*(?=[{\[])/, "")
+        .replace(/(?<=[}\]])[^}\]]*$/, "")
+        .replace(/\|\|/g, "")
         .trim();
 
-      // Try parsing directly
       return JSON.parse(cleaned);
     } catch (err) {
       console.warn("⚠️ Failed to parse AI JSON:", err.message, rawText);
-
-      // Try last-resort extraction for nested JSON
       try {
         const match = rawText.match(/\{[\s\S]*\}/);
         if (match) return JSON.parse(match[0]);
       } catch (_) {}
-
-      // If everything fails
-      alert("Error: Could not parse AI response.");
+      setNotif({
+        message: "Error: Could not parse AI response.",
+        type: "error",
+      });
       return { flashcards: [], quiz: [] };
     }
   };
 
-  // 🔹 Core generator function (for flashcards or quiz)
+  // Core generator function (for flashcards or quiz)
   const generateFromFile = async (selectedMode) => {
-    if (!file) return alert("Please upload a file first.");
+    if (!file) {
+      setNotif({
+        message: "Please upload a file first.",
+        type: "error",
+      });
+      return null;
+    }
 
     try {
       const text = await file.text();
@@ -86,7 +100,7 @@ const GeneratePage = () => {
           typeof data.error === "string"
             ? data.error
             : JSON.stringify(data.error);
-        alert("Error: " + msg);
+        setNotif({ message: "Error: " + msg, type: "error" });
         return null;
       }
 
@@ -94,14 +108,17 @@ const GeneratePage = () => {
       return parseAIResponse(data.result);
     } catch (err) {
       console.error("❌ Generation error:", err);
-      alert("Something went wrong while generating.");
+      setNotif({
+        message: "Something went wrong while generating.",
+        type: "error",
+      });
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 When user selects mode
+  // When user selects mode
   const handleModeSelection = async (selectedMode) => {
     console.log("Mode selected:", selectedMode);
     setMode(selectedMode);
@@ -117,7 +134,7 @@ const GeneratePage = () => {
     }
   };
 
-  // 🔹 When flashcards end → auto-generate quiz
+  // When flashcards end → auto-generate quiz
   const handleFlashcardsDone = async () => {
     console.log("🎯 Flashcards completed, generating quiz next...");
     const aiOutput = await generateFromFile("quiz");
@@ -126,12 +143,22 @@ const GeneratePage = () => {
       setQuiz(aiOutput.quiz);
       setShowQuiz(true);
     } else {
-      alert("Quiz generation failed or returned empty.");
+      setNotif({
+        message: "Quiz generation failed or returned empty.",
+        type: "error",
+      });
     }
   };
 
   return (
     <main className="generate-page">
+      {/* ✅ Notification Toast */}
+      <Notification
+        message={notif.message}
+        type={notif.type}
+        onClose={() => setNotif({ message: "", type: "info" })}
+      />
+
       <div className="generate-center">
         {!file && <UploadFile onFileUpload={handleFileUpload} />}
 
@@ -151,7 +178,12 @@ const GeneratePage = () => {
               </div>
             </div>
 
-            {!mode && <ModeSelector onSelectMode={handleModeSelection} />}
+            {!mode && (
+              <ModeSelector
+                onSelectMode={handleModeSelection}
+                disabled={loading}
+              />
+            )}
 
             {loading && (
               <div className="loading">⏳ Generating... please wait</div>
