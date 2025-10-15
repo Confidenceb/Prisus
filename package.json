@@ -10,10 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "firebase": "^12.4.0",
     "framer-motion": "^12.23.22",
     "lucide": "^0.544.0",
     "lucide-react": "^0.544.0",
+    "mammoth": "^1.11.0",
+    "multer": "^2.0.2",
+    "node-pptx-parser": "^1.0.1",
+    "pdf-parse": "^2.3.11",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3"

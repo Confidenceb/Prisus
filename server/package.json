@@ -15,9 +15,12 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "mammoth": "^1.11.0",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
-    "openai": "^6.2.0"
+    "node-pptx-parser": "^1.0.1",
+    "openai": "^6.2.0",
+    "pdf-parse": "^2.3.11"
   },
   "description": ""
 }
