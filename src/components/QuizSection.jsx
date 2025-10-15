@@ -9,6 +9,7 @@ export default function QuizSection({ quizData = [], onRestart }) {
   useEffect(() => {
     setCurrentIndex(0);
     setScore(0);
+    setFinished(false);
   }, [quizData]);
 
   if (!quizData.length) {
@@ -17,11 +18,28 @@ export default function QuizSection({ quizData = [], onRestart }) {
 
   const currentQ = quizData[currentIndex];
 
-  const handleAnswer = (option) => {
-    if (option === currentQ.correct) setScore((prev) => prev + 1);
+  // ✅ Handle both "A"/"B"/"C"/"D" and full-text answers
+  const handleAnswer = (option, index) => {
+    let isCorrect = false;
+
+    // If correct is like "A", "B", etc.
+    if (
+      typeof currentQ.correct === "string" &&
+      /^[A-Da-d]$/.test(currentQ.correct.trim())
+    ) {
+      const correctIndex =
+        currentQ.correct.trim().toUpperCase().charCodeAt(0) - 65; // A=0, B=1, etc.
+      isCorrect = index === correctIndex;
+    } else {
+      // If correct is the actual answer text
+      isCorrect =
+        option.trim().toLowerCase() === currentQ.correct.trim().toLowerCase();
+    }
+
+    if (isCorrect) setScore((prev) => prev + 1);
 
     if (currentIndex < quizData.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((prev) => prev + 1);
     } else {
       setFinished(true);
     }
@@ -61,7 +79,7 @@ export default function QuizSection({ quizData = [], onRestart }) {
             <button
               key={i}
               className="quiz-option"
-              onClick={() => handleAnswer(opt)}
+              onClick={() => handleAnswer(opt, i)}
             >
               {opt}
             </button>

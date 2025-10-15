@@ -99,7 +99,13 @@ const GeneratePage = ({ user }) => {
       }
 
       console.log("Raw AI output:", data.result);
-      return parseAIResponse(data.result);
+
+      // ✅ FIX: only parse if data.result is a string
+      if (typeof data.result === "string") {
+        return parseAIResponse(data.result);
+      } else {
+        return data.result;
+      }
     } catch (err) {
       console.error("❌ Generation error:", err);
       setNotif({
