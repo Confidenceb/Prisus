@@ -8,17 +8,16 @@ import path from "path";
 import os from "os";
 import PptxParser from "node-pptx-parser";
 import { createRequire } from "module";
+
 const require = createRequire(import.meta.url);
 const pdfParse = require("pdf-parse");
 
 dotenv.config();
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() }); // ✅ Define before middlewares
 
-// ✅ Basic setup
-const PORT = process.env.PORT || 5000;
-const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+// ✅ Define multer BEFORE JSON middlewares
+const upload = multer({ storage: multer.memoryStorage() });
 
 // ✅ CORS setup
 const allowedOrigins = [
@@ -29,7 +28,7 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) callback(null, true);
       else {
         console.log("❌ Blocked by CORS:", origin);
@@ -44,17 +43,16 @@ app.use(
 
 app.options("*", cors());
 
-// ✅ JSON middleware AFTER multer route (important!)
+// ✅ JSON middlewares AFTER multer definition
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ PDF extraction
+// 🧩 Utility functions
 async function extractPdfText(buffer) {
   const data = await pdfParse(buffer);
   return data.text;
 }
 
-// ✅ PPTX extraction
 async function extractPptxText(buffer) {
   const tempPath = path.join(os.tmpdir(), `upload-${Date.now()}.pptx`);
   await fs.writeFile(tempPath, buffer);
@@ -69,25 +67,24 @@ async function extractPptxText(buffer) {
       )
       .join("\n\n");
     return text.trim();
-  } catch (error) {
-    console.error("PPTX parse error:", error.message);
-    throw new Error("Could not extract text from PowerPoint file.");
   } finally {
     await fs.unlink(tempPath).catch(() => {});
   }
 }
 
-// ✅ File text extractor
 async function extractText(file) {
   const { buffer, mimetype } = file;
   if (mimetype === "application/pdf") return await extractPdfText(buffer);
+
   if (
     mimetype ===
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {
+    // ✅ Mammoth expects { buffer: Buffer }
     const result = await mammoth.extractRawText({ buffer });
     return result.value;
   }
+
   if (
     mimetype ===
       "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
@@ -95,12 +92,14 @@ async function extractText(file) {
   ) {
     return await extractPptxText(buffer);
   }
+
   if (mimetype.startsWith("text/")) return buffer.toString("utf-8");
+
   throw new Error(`Unsupported file type: ${mimetype}`);
 }
 
-// ✅ Groq AI generator
 async function generateWithGroq(text, mode) {
+  const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY)
     throw new Error("GROQ_API_KEY not configured. Add it to your .env file.");
 
@@ -149,30 +148,35 @@ Return ONLY valid JSON in this exact format:
   return JSON.parse(clean.match(/\{[\s\S]*\}/)[0]);
 }
 
-// ✅ Root
+// ✅ Root route
 app.get("/", (req, res) => {
   res.json({ message: "✅ Prisus AI backend is running!" });
 });
 
-// ✅ Generate endpoint (main fix here)
+// ✅ Upload route
 app.post("/generate", upload.single("file"), async (req, res) => {
-  console.log("📦 Received body:", req.body);
-  console.log("📎 Received file:", req.file);
+  console.log("📦 Body:", req.body);
+  console.log("📎 File:", req.file);
 
   try {
     const { mode } = req.body;
     const file = req.file;
 
-    if (!file) return res.status(400).json({ error: "No file uploaded" });
-    if (!mode || !["flashcards", "quiz"].includes(mode))
-      return res.status(400).json({ error: "Invalid mode" });
+    if (!file) {
+      console.log("❌ No file received");
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-    console.log("📄 Processing:", file.originalname);
+    if (!mode || !["flashcards", "quiz"].includes(mode)) {
+      return res.status(400).json({ error: "Invalid mode" });
+    }
+
+    console.log(`📄 Processing ${file.originalname} (${file.mimetype})...`);
     const text = await extractText(file);
     const result = await generateWithGroq(text, mode);
     res.json({ result });
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error("❌ Error:", err);
     res
       .status(500)
       .json({ error: err.message || "Failed to generate content" });
@@ -180,7 +184,7 @@ app.post("/generate", upload.single("file"), async (req, res) => {
 });
 
 // ✅ Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`🔑 GROQ key: ${GROQ_API_KEY ? "✅ Configured" : "❌ Missing"}`);
 });
