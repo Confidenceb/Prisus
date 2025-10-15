@@ -68,19 +68,14 @@ const GeneratePage = ({ user }) => {
   // Core generator function (for flashcards or quiz)
   const generateFromFile = async (selectedMode) => {
     if (!file) {
-      setNotif({
-        message: "Please upload a file first.",
-        type: "error",
-      });
+      setNotif({ message: "Please upload a file first.", type: "error" });
       return null;
     }
 
     try {
-      const text = await file.text();
-      const prompt =
-        selectedMode === "flashcards"
-          ? `Generate clear and detailed flashcards from this content:\n\n${text}`
-          : `Generate 5 quiz questions with options and correct answers from this content:\n\n${text}`;
+      const formData = new FormData();
+      formData.append("mode", selectedMode);
+      formData.append("file", file);
 
       setLoading(true);
       console.log(`🧠 Generating ${selectedMode}...`);
@@ -89,8 +84,7 @@ const GeneratePage = ({ user }) => {
         "https://prisusai-production.up.railway.app/generate",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
+          body: formData, // ✅ send file directly
         }
       );
 
