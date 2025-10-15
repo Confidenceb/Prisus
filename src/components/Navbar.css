@@ -93,6 +93,13 @@
   background-color: #3576d1;
 }
 
+.btn-logout {
+  background-color: #ff4d4d !important;
+}
+.btn-logout:hover {
+  background-color: #e60000 !important;
+}
+
 /* 🍔 Hamburger Menu */
 .menu-toggle {
   display: none;

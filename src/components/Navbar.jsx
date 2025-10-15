@@ -41,7 +41,9 @@ const Navbar = ({ user, setUser }) => {
           type="button"
           className={`menu-toggle ${menuOpen ? "active" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-label={
+            menuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
           aria-expanded={menuOpen}
           aria-controls="primary-navigation"
         >
@@ -83,14 +85,15 @@ const Navbar = ({ user, setUser }) => {
             <>
               <li className="nav-avatar">
                 <Link to="/profile" onClick={() => setMenuOpen(false)}>
-                  <img src={avatarUrl} alt="User Avatar" className="avatar-img" />
+                  <img
+                    src={avatarUrl}
+                    alt="User Avatar"
+                    className="avatar-img"
+                  />
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={handleLogout}
-                  className="login-btn logout-btn"
-                >
+                <button onClick={handleLogout} className="login-btn btn-logout">
                   Logout
                 </button>
               </li>
