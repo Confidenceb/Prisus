@@ -66,7 +66,7 @@ const Navbar = ({ user, setUser }) => {
           </li>
           <li>
             <Link to="/generatepage" onClick={() => setMenuOpen(false)}>
-              Generate Page
+              Generate
             </Link>
           </li>
           <li>

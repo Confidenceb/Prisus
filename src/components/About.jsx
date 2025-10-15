@@ -9,10 +9,10 @@ const About = () => {
           About <span>Prisus.ai</span>
         </h2>
         <p className="about-text">
-          Learnix is an AI-powered platform that helps educators and learners
+          Prisus.ai is an AI-powered platform that helps educators and learners
           generate smart quizzes in seconds. Whether you're preparing for a test
-          or building an interactive learning experience, Learnix gives you the
-          tools to create, customize, and share quizzes effortlessly.
+          or building an interactive learning experience, Prisus.ai gives you
+          the tools to create, customize, and share quizzes effortlessly.
         </p>
 
         <div className="about-stats">
