@@ -16,7 +16,11 @@ dotenv.config();
 const app = express();
 
 // ✅ Proper CORS setup
-const allowedOrigins = ["http://localhost:5173", "https://prisus.vercel.app"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://prisus.vercel.app",
+];
 app.use(
   cors({
     origin: function (origin, callback) {
