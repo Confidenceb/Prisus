@@ -1,18 +1,38 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import "./Navbar.css";
+import { logoutUser } from "../auth";
 
-const Navbar = () => {
+const Navbar = ({ user, setUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
+  // 🧠 Generate avatar URL based on user name or email
+  const avatarUrl = user
+    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        user.displayName || user.email || "User"
+      )}&background=4b2b8a&color=fff`
+    : null;
 
   return (
     <nav className="navbar">
       {menuOpen && (
         <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
       )}
+
       <div className="nav-container">
-        <Link to="/" className="nav-logo">
+        <Link to="/" className="nav-logo" onClick={() => setMenuOpen(false)}>
           Prisus<span>.ai</span>
         </Link>
 
@@ -59,15 +79,36 @@ const Navbar = () => {
               About
             </Link>
           </li>
-          <li>
-            <Link
-              to="/login"
-              className="login-btn"
-              onClick={() => setMenuOpen(false)}
-            >
-              Sign In
-            </Link>
-          </li>
+
+          {/* Conditional Links Based on Login State */}
+          {user ? (
+            <>
+              <li className="nav-avatar">
+                <Link to="/profile" onClick={() => setMenuOpen(false)}>
+                  <img
+                    src={avatarUrl}
+                    alt="User Avatar"
+                    className="avatar-img"
+                  />
+                </Link>
+              </li>
+              <li>
+                <button onClick={handleLogout} className="login-btn btn-logout">
+                  Logout
+                </button>
+              </li>
+            </>
+          ) : (
+            <li>
+              <Link
+                to="/login"
+                className="login-btn"
+                onClick={() => setMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

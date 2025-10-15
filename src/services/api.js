@@ -1,28 +1,36 @@
+// src/services/api.js
+
+const API_URL = import.meta.env.PROD
+  ? "https://prisusai-production.up.railway.app"
+  : "http://localhost:5000";
+
 export const generateContent = async (file, mode) => {
   try {
-    // Convert file to text
-    const text = await file.text();
+    // Create FormData to send file
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("mode", mode); // "flashcards" or "quiz"
 
-    // Build the prompt
-    const prompt = `Generate ${mode} from the following study material:\n\n${text}`;
+    console.log("📤 Sending request to:", `${API_URL}/generate`);
+    console.log("📄 File:", file.name);
+    console.log("🎯 Mode:", mode);
 
-    // Send to backend
-    const response = await fetch(
-      "https://prisusai-production.up.railway.app/generate",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      }
-    );
+    const response = await fetch(`${API_URL}/generate`, {
+      method: "POST",
+      body: formData, // Don't set Content-Type header - browser will set it with boundary
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to generate content");
+    }
 
     const data = await response.json();
+    console.log("✅ Received response:", data);
 
-    return data; // { result: "AI text..." }
+    return data.result; // Returns { flashcards: [...] } or { quiz: [...] }
   } catch (error) {
-    console.error("API error:", error);
+    console.error("❌ API error:", error);
     throw error;
   }
 };

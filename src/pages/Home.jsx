@@ -1,13 +1,20 @@
+// src/pages/Home.jsx
 import React from "react";
 import "./Home.css";
-
 import Feature from "../components/Feature";
 import About from "../components/About";
 import Steps from "../components/Steps";
 import CTA from "../components/CTA";
 import Testimonials from "../components/Testimonials";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate("/generatepage"); // ✅ Go straight to GeneratePage for everyone
+  };
+
   return (
     <>
       <main className="hero-section animate-fade-in">
@@ -20,7 +27,12 @@ function Home() {
             Upload your study materials and let our AI generate personalized
             tests to help you master any subject.
           </p>
-          <button className="get-started-btn animate-grow">Get Started</button>
+          <button
+            onClick={handleGetStarted}
+            className="get-started-btn animate-grow"
+          >
+            Get Started
+          </button>
         </div>
       </main>
       <Feature />

@@ -93,6 +93,13 @@
   background-color: #3576d1;
 }
 
+.btn-logout {
+  background-color: #ff4d4d !important;
+}
+.btn-logout:hover {
+  background-color: #e60000 !important;
+}
+
 /* 🍔 Hamburger Menu */
 .menu-toggle {
   display: none;
@@ -233,4 +240,22 @@
     font-size: 1rem;
     padding: 0.5em 0.55em;
   }
+}
+.nav-avatar {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.avatar-img:hover {
+  transform: scale(1.1);
 }
