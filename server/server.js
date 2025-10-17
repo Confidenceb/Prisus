@@ -10,9 +10,7 @@ import PptxParser from "node-pptx-parser";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
-// Fix pdf-parse import to handle .default export if needed
-const pdfParseModule = require("pdf-parse");
-const pdfParse = pdfParseModule.default || pdfParseModule;
+const pdfParse = require("pdf-parse");
 
 dotenv.config();
 
@@ -56,16 +54,15 @@ async function extractPdfText(buffer) {
 }
 
 async function extractPptxText(buffer) {
+  // Write buffer to temp file
   const tempPath = path.join(os.tmpdir(), `upload-${Date.now()}.pptx`);
   await fs.writeFile(tempPath, buffer);
   try {
-    // Pass file path when creating PptxParser instance
+    // Correct instantiation according to library docs
     const parser = new PptxParser(tempPath);
-    // Extract text array of slides
+    // Extract text from all slides
     const slideTexts = await parser.extractText();
-    // Combine all slide texts
-    const text = slideTexts.join("\n\n");
-    return text.trim();
+    return slideTexts.join("\n\n").trim();
   } finally {
     await fs.unlink(tempPath).catch(() => {});
   }
