@@ -20,6 +20,8 @@ import Signup from "./pages/signup";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
 
+import ScrollToTop from "./components/ScrollToTop";
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,6 +40,7 @@ function App() {
   return (
     <Router>
       <Navbar user={user} setUser={setUser} />
+      <ScrollToTop />
       <Routes>
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
@@ -59,7 +62,6 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-
       <Footer />
     </Router>
   );
