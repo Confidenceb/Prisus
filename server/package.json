@@ -21,6 +21,7 @@
     "officeparser": "^5.2.1",
     "openai": "^6.2.0",
     "pdf-parse": "^2.4.3",
+    "pdf2json": "^4.0.0",
     "textract": "^2.5.0"
   },
   "description": ""

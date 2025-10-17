@@ -125,7 +125,9 @@ const UploadFile = ({ onFileUpload }) => {
                   <div className="upload-line">
                     <strong>Upload a file</strong> or drag and drop
                   </div>
-                  <div className="muted">PDF, DOC, DOCX, or TXT up to 10MB</div>
+                  <div className="muted">
+                    PDF, DOC, DOCX, PPTX or TXT up to 10MB
+                  </div>
                 </>
               )}
             </div>

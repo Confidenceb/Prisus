@@ -10,17 +10,25 @@ import { fileURLToPath } from "url";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
-// ✅ Fix PDF Parse import
+// ✅ Fix PDF Parse import - Try multiple methods
 let pdfParse;
 try {
-  const pdfModule = require("pdf-parse/lib/pdf-parse.js");
-  pdfParse = pdfModule.default || pdfModule;
-} catch (err) {
-  try {
-    pdfParse = require("pdf-parse");
-  } catch (err2) {
-    console.warn("⚠️ pdf-parse not found. PDF parsing will be disabled.");
+  pdfParse = require("pdf-parse");
+  // Test if it's actually a function
+  if (typeof pdfParse !== "function") {
+    pdfParse = pdfParse.default;
   }
+} catch (err) {
+  console.warn("⚠️ pdf-parse not found. PDF parsing will be disabled.");
+}
+
+// Fallback PDF parser using pdf2json
+let pdf2json;
+try {
+  const PDF2JSON = require("pdf2json");
+  pdf2json = PDF2JSON;
+} catch (err) {
+  console.warn("⚠️ pdf2json not found as fallback.");
 }
 
 // ✅ Fix PPTX Parser import
