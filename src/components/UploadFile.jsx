@@ -31,12 +31,12 @@ const UploadFile = ({ onFileUpload }) => {
       return;
     }
     setSelected(file);
-    // Immediately call parent handler (you can instead wait for upload button click)
     onFileUpload && onFileUpload(file);
   };
 
   const onChange = (e) => {
     validateAndSet(e.target.files[0]);
+    e.target.value = null;
   };
 
   const onDrop = (e) => {
@@ -136,7 +136,6 @@ const UploadFile = ({ onFileUpload }) => {
             className="btn-primary"
             onClick={() => {
               if (selected) {
-                // If you want to trigger upload action separately, call onFileUpload here:
                 onFileUpload && onFileUpload(selected);
               } else {
                 openDialog();

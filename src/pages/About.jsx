@@ -113,17 +113,32 @@ const AboutPage = () => {
           <h2>Meet the Team</h2>
           <div className="team-grid">
             <div className="team-member">
-              <img src="../../public/jamiu.png" alt="Noibi Jamiu" />
+              <img
+                src={
+                  "https://pbs.twimg.com/profile_images/1964808293257273344/fqnWGY9u_400x400.jpg"
+                }
+                alt="Noibi Jamiu"
+              />
               <h3>Noibi Jamiu</h3>
               <p>Frontend & Backend Developer</p>
             </div>
             <div className="team-member">
-              <img src="../../public/jamiu.png" alt="Sanusi" />
+              <img
+                src={
+                  "https://pbs.twimg.com/profile_images/1964808293257273344/fqnWGY9u_400x400.jpg"
+                }
+                alt="Sanusi"
+              />
               <h3>Sanusi</h3>
               <p>Backend & Authentication</p>
             </div>
             <div className="team-member">
-              <img src="../../public/jamiu.png" alt="Precious" />
+              <img
+                src={
+                  "https://pbs.twimg.com/profile_images/1964808293257273344/fqnWGY9u_400x400.jpg"
+                }
+                alt="Precious"
+              />
               <h3>Precious</h3>
               <p>Frontend (UI Support)</p>
             </div>
