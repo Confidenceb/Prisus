@@ -10,7 +10,9 @@ import PptxParser from "node-pptx-parser";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse");
+// Fix pdf-parse import to handle .default export if needed
+const pdfParseModule = require("pdf-parse");
+const pdfParse = pdfParseModule.default || pdfParseModule;
 
 dotenv.config();
 
@@ -57,15 +59,12 @@ async function extractPptxText(buffer) {
   const tempPath = path.join(os.tmpdir(), `upload-${Date.now()}.pptx`);
   await fs.writeFile(tempPath, buffer);
   try {
-    const parser = new PptxParser();
-    await parser.loadFile(tempPath);
-    const slides = await parser.parse();
-    const text = slides
-      .map(
-        (slide) =>
-          slide.texts?.map((t) => (t.text ? t.text.trim() : "")).join(" ") || ""
-      )
-      .join("\n\n");
+    // Pass file path when creating PptxParser instance
+    const parser = new PptxParser(tempPath);
+    // Extract text array of slides
+    const slideTexts = await parser.extractText();
+    // Combine all slide texts
+    const text = slideTexts.join("\n\n");
     return text.trim();
   } finally {
     await fs.unlink(tempPath).catch(() => {});
@@ -144,7 +143,7 @@ Return ONLY valid JSON in this exact format:
 
   const data = await response.json();
   const aiText = data.choices[0].message.content;
-  const clean = aiText.replace(/```json|```/g, "").trim();
+  const clean = aiText.replace(/``````/g, "").trim();
   return JSON.parse(clean.match(/\{[\s\S]*\}/)[0]);
 }
 
