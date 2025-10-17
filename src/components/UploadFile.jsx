@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import "./UploadFile.css";
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-const ACCEPTED_EXT = /\.(pdf|txt|doc|docx|pptx)$/i;
+const ACCEPTED_EXT = /\.(pdf|txt|doc|docx|pptx|ppt)$/i;
 
 const UploadFile = ({ onFileUpload }) => {
   const inputRef = useRef(null);
@@ -17,20 +17,32 @@ const UploadFile = ({ onFileUpload }) => {
   const validateAndSet = (file) => {
     setError("");
     if (!file) return;
+
+    // Check file size
     if (file.size > MAX_SIZE) {
       setError("File too large — maximum 10MB.");
       return;
     }
-    if (
-      !ACCEPTED_EXT.test(file.name) &&
-      !file.type.includes("pdf") &&
-      !file.type.includes("text") &&
-      !file.type.includes("word") &&
-      !file.type.includes("presentation")
-    ) {
+
+    // Check file extension and MIME type
+    const validMimeTypes = [
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.ms-powerpoint",
+    ];
+
+    const isValidExtension = ACCEPTED_EXT.test(file.name);
+    const isValidMimeType = validMimeTypes.includes(file.type);
+
+    if (!isValidExtension && !isValidMimeType) {
       setError("Unsupported file type. Use PDF, DOC, DOCX, PPTX or TXT.");
       return;
     }
+
+    // File is valid
     setSelected(file);
     onFileUpload && onFileUpload(file);
   };
@@ -74,7 +86,7 @@ const UploadFile = ({ onFileUpload }) => {
             ref={inputRef}
             className="file-input"
             type="file"
-            accept=".pdf,.doc,.docx,.txt"
+            accept=".pdf,.doc,.docx,.txt,.pptx,.ppt"
             onChange={onChange}
             aria-hidden="true"
             hidden
