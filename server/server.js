@@ -18,17 +18,18 @@ try {
   if (typeof pdfParse !== "function") {
     pdfParse = pdfParse.default;
   }
+  console.log("✅ pdf-parse loaded successfully");
 } catch (err) {
-  console.warn("⚠️ pdf-parse not found. PDF parsing will be disabled.");
+  console.error("⚠️ pdf-parse load error:", err.message);
 }
 
 // Fallback PDF parser using pdf2json
 let pdf2json;
 try {
-  const PDF2JSON = require("pdf2json");
-  pdf2json = PDF2JSON;
+  pdf2json = require("pdf2json");
+  console.log("✅ pdf2json loaded successfully");
 } catch (err) {
-  console.warn("⚠️ pdf2json not found as fallback.");
+  console.error("⚠️ pdf2json load error:", err.message);
 }
 
 // ✅ Fix PPTX Parser import
@@ -77,23 +78,116 @@ const upload = multer({ storage: multer.memoryStorage() });
 const PORT = process.env.PORT || 5000;
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 
-// 🧠 PDF extractor - FIXED
+// 🧠 PDF extractor - FIXED with fallback
 async function extractPdfText(buffer) {
-  if (!pdfParse) {
+  if (!pdfParse && !pdf2json) {
     throw new Error(
-      "PDF parsing not available. Install pdf-parse: npm install pdf-parse"
+      "PDF parsing not available. Install: npm install pdf-parse pdf2json"
     );
   }
 
-  try {
-    const data = await pdfParse(buffer);
-    return data.text;
-  } catch (error) {
-    console.error("PDF parse error:", error.message);
-    throw new Error(
-      "Failed to extract text from PDF. The file might be corrupted or password-protected."
-    );
+  // Try pdf-parse first
+  if (pdfParse) {
+    try {
+      console.log("📄 Attempting PDF extraction with pdf-parse...");
+      const data = await pdfParse(buffer, {
+        // Options to handle various PDF types
+        max: 0, // Parse all pages
+        version: "v1.10.100",
+      });
+
+      if (data.text && data.text.trim().length > 0) {
+        console.log(
+          "✅ PDF extracted successfully:",
+          data.text.length,
+          "chars"
+        );
+        return data.text;
+      }
+      console.log("⚠️ pdf-parse returned empty text, trying fallback...");
+    } catch (error) {
+      console.error("⚠️ pdf-parse failed:", error.message);
+      console.log("Trying fallback method...");
+    }
   }
+
+  // Fallback to pdf2json
+  if (pdf2json) {
+    try {
+      console.log("📄 Attempting PDF extraction with pdf2json...");
+      return await extractPdfWithPdf2Json(buffer);
+    } catch (error) {
+      console.error("⚠️ pdf2json also failed:", error.message);
+    }
+  }
+
+  throw new Error(
+    "Failed to extract text from PDF. The file might be corrupted, password-protected, or image-based (scanned). Try converting it to DOCX first."
+  );
+}
+
+// Fallback PDF extractor using pdf2json
+async function extractPdfWithPdf2Json(buffer) {
+  return new Promise((resolve, reject) => {
+    const tempPath = path.join(os.tmpdir(), `pdf-${Date.now()}.pdf`);
+
+    fs.writeFile(tempPath, buffer)
+      .then(() => {
+        const pdfParser = new pdf2json();
+
+        pdfParser.on("pdfParser_dataError", (errData) => {
+          fs.unlink(tempPath).catch(() => {});
+          reject(new Error(errData.parserError));
+        });
+
+        pdfParser.on("pdfParser_dataReady", (pdfData) => {
+          try {
+            let text = "";
+
+            // Extract text from all pages
+            if (pdfData.Pages) {
+              pdfData.Pages.forEach((page) => {
+                if (page.Texts) {
+                  page.Texts.forEach((textItem) => {
+                    if (textItem.R) {
+                      textItem.R.forEach((r) => {
+                        if (r.T) {
+                          text += decodeURIComponent(r.T) + " ";
+                        }
+                      });
+                    }
+                  });
+                  text += "\n";
+                }
+              });
+            }
+
+            fs.unlink(tempPath).catch(() => {});
+
+            if (text.trim().length === 0) {
+              reject(
+                new Error(
+                  "PDF appears to be empty or image-based (no extractable text)"
+                )
+              );
+            } else {
+              console.log(
+                "✅ PDF extracted with pdf2json:",
+                text.length,
+                "chars"
+              );
+              resolve(text.trim());
+            }
+          } catch (err) {
+            fs.unlink(tempPath).catch(() => {});
+            reject(err);
+          }
+        });
+
+        pdfParser.loadPDF(tempPath);
+      })
+      .catch(reject);
+  });
 }
 
 // 🧠 PPTX extractor - FIXED with officeparser
@@ -275,6 +369,6 @@ app.listen(PORT, "0.0.0.0", () => {
     `🔑 Groq API Key: ${GROQ_API_KEY ? "✅ Configured" : "❌ Missing"}`
   );
   console.log(`🌐 Allowed Origins: ${allowedOrigins.join(", ")}`);
-  console.log(`📦 PDF Support: ${pdfParse ? "✅" : "❌"}`);
+  console.log(`📦 PDF Support: ${pdfParse || pdf2json ? "✅" : "❌"}`);
   console.log(`📦 PPTX Support: ${extractPptx ? "✅" : "❌"}`);
 });
