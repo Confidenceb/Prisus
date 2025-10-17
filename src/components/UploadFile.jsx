@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import "./UploadFile.css";
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-const ACCEPTED_EXT = /\.(pdf|txt|doc|docx)$/i;
+const ACCEPTED_EXT = /\.(pdf|txt|doc|docx|pptx)$/i;
 
 const UploadFile = ({ onFileUpload }) => {
   const inputRef = useRef(null);
