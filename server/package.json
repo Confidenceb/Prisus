@@ -20,7 +20,8 @@
     "node-fetch": "^3.3.2",
     "officeparser": "^5.2.1",
     "openai": "^6.2.0",
-    "pdf-parse": "^2.4.3"
+    "pdf-parse": "^2.4.3",
+    "textract": "^2.5.0"
   },
   "description": ""
 }

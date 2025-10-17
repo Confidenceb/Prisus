@@ -25,9 +25,10 @@ const UploadFile = ({ onFileUpload }) => {
       !ACCEPTED_EXT.test(file.name) &&
       !file.type.includes("pdf") &&
       !file.type.includes("text") &&
-      !file.type.includes("word")
+      !file.type.includes("word") &&
+      !file.type.includes("presentation")
     ) {
-      setError("Unsupported file type. Use PDF, DOC, DOCX or TXT.");
+      setError("Unsupported file type. Use PDF, DOC, DOCX, PPTX or TXT.");
       return;
     }
     setSelected(file);
